@@ -29,11 +29,11 @@ static const float TAB_BAR_HEIGHT = 44.0f;
 @synthesize selectedIndex = _selectedIndex;
 @synthesize delegate = _delegate;
 
-- (void)removeTabButtons {
+- (void)removeAllSegments {
   [segmentedControl removeAllSegments];
 }
 
-- (void)addTabButtons {
+- (void)addSegments {
 	NSUInteger index = 0;
 	for (UIViewController *viewController in self.viewControllers) {
     [segmentedControl insertSegmentWithTitle:viewController.title atIndex:index animated:NO];
@@ -42,10 +42,9 @@ static const float TAB_BAR_HEIGHT = 44.0f;
 }
 
 - (void)reloadTabButtons {
-	[self removeTabButtons];
-	[self addTabButtons];
+	[self removeAllSegments];
+	[self addSegments];
   // TODO -- Do I need this???
-	// Force redraw of the previously active tab.
 	NSUInteger lastIndex = _selectedIndex;
 	_selectedIndex = NSNotFound;
 	self.selectedIndex = lastIndex;

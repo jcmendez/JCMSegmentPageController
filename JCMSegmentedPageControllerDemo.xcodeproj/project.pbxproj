@@ -6,6 +6,20 @@
 	objectVersion = 46;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		6436AA2014E0350E00DA6EF3 /* Documentation */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 6436AA2314E0350E00DA6EF3 /* Build configuration list for PBXAggregateTarget "Documentation" */;
+			buildPhases = (
+				6436AA2514E0351E00DA6EF3 /* ShellScript */,
+			);
+			dependencies = (
+			);
+			name = Documentation;
+			productName = Documentation;
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
 		7BCE96EF1469751600135C63 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7BCE96EE1469751600135C63 /* UIKit.framework */; };
 		7BCE96F11469751600135C63 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7BCE96F01469751600135C63 /* Foundation.framework */; };
@@ -28,8 +42,8 @@
 		7BCE96FC1469751600135C63 /* Demo-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Demo-Prefix.pch"; sourceTree = "<group>"; };
 		7BCE96FD1469751600135C63 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		7BCE96FE1469751600135C63 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		7BCE97001469751600135C63 /* JCMSegmentPageController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JCMSegmentPageController.h; sourceTree = "<group>"; };
-		7BCE97011469751600135C63 /* JCMSegmentPageController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JCMSegmentPageController.m; sourceTree = "<group>"; };
+		7BCE97001469751600135C63 /* JCMSegmentPageController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = JCMSegmentPageController.h; path = ../JCMSegmentPageController.h; sourceTree = "<group>"; };
+		7BCE97011469751600135C63 /* JCMSegmentPageController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = JCMSegmentPageController.m; path = ../JCMSegmentPageController.m; sourceTree = "<group>"; };
 		7BCE970B146975EA00135C63 /* DemoSimpleTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemoSimpleTableViewController.h; sourceTree = "<group>"; };
 		7BCE970C146975EA00135C63 /* DemoSimpleTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DemoSimpleTableViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -142,6 +156,7 @@
 			projectRoot = "";
 			targets = (
 				7BCE96E91469751600135C63 /* JCMSegmentedPageControllerDemo */,
+				6436AA2014E0350E00DA6EF3 /* Documentation */,
 			);
 		};
 /* End PBXProject section */
@@ -156,6 +171,22 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		6436AA2514E0351E00DA6EF3 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "/usr/local/bin/appledoc ${SRCROOT}";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		7BCE96E61469751600135C63 /* Sources */ = {
@@ -183,6 +214,20 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		6436AA2114E0350E00DA6EF3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		6436AA2214E0350E00DA6EF3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 		7BCE97061469751600135C63 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -257,6 +302,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		6436AA2314E0350E00DA6EF3 /* Build configuration list for PBXAggregateTarget "Documentation" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6436AA2114E0350E00DA6EF3 /* Debug */,
+				6436AA2214E0350E00DA6EF3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		7BCE96E41469751600135C63 /* Build configuration list for PBXProject "JCMSegmentedPageControllerDemo" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

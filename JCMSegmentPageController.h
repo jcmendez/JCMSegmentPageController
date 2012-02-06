@@ -24,9 +24,14 @@
  */
 @interface JCMSegmentPageController : UIViewController
 
+/// Keeps an array of the controllers managed by this container controller
 @property (nonatomic, copy) NSArray *viewControllers;
+/// Reference to the currently selected controller
 @property (nonatomic, weak) UIViewController *selectedViewController;
+/// Index of the currently selected controller
 @property (nonatomic, assign) NSUInteger selectedIndex;
+/// Optional delegate that can be informed of a new selection and decide
+/// whether a page can or can't be selected
 @property (nonatomic, weak) id <JCMSegmentPageControllerDelegate> delegate;
 
 - (void)setSelectedIndex:(NSUInteger)index animated:(BOOL)animated;
@@ -39,6 +44,19 @@
  */
 @protocol JCMSegmentPageControllerDelegate <NSObject>
 @optional
+/**
+ * Delegate can decide if the page should be selected or not.  Default implementation is YES.
+ * @return NO if the page shouldn't be selected
+ * @param segmentPageController the JCMSegmentPageController generating this call
+ * @param viewController the view controller (page) to decide if should or shouldn't be selected
+ * @param index the index of this page within the container
+ */
 - (BOOL)segmentPageController:(JCMSegmentPageController *)segmentPageController shouldSelectViewController:(UIViewController *)viewController atIndex:(NSUInteger)index;
+/**
+ * Delegate gets notified after the page was selected.
+ * @param segmentPageController the JCMSegmentPageController generating this call
+ * @param viewController the view controller (page) that was selected
+ * @param index the index of this page within the container
+ */
 - (void)segmentPageController:(JCMSegmentPageController *)segmentPageController didSelectViewController:(UIViewController *)viewController atIndex:(NSUInteger)index;
 @end
