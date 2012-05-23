@@ -97,6 +97,11 @@ static const float TAB_BAR_HEIGHT = 44.0f;
 	[self layoutHeaderView];
 }
 
+- (void)dealloc {
+  _viewControllers = nil;
+  _delegate = nil;
+}
+
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
 	// Only rotate if all child view controllers agree on the new orientation.
 	for (UIViewController *viewController in self.viewControllers) {
