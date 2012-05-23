@@ -16,6 +16,8 @@ The only files you need to add to your project are
         JCMSegmentPageController.h
         JCMSegmentPageController.m
 
+See [this thread on Stack Overflow](http://stackoverflow.com/questions/10723434/how-to-use-jcmsegmentpagecontroller-with-storyboards/) on how to define the contained subviews in XCode/IB
+
 ## Author
 Juan-Carlos Mendez: jcmendez@alum.mit.edu
 
