@@ -161,8 +161,8 @@ static const float TAB_BAR_HEIGHT = 44.0f;
 		_selectedIndex = newSelectedIndex;
 	}
 	else if (_selectedIndex != newSelectedIndex) {
-		UIViewController *fromViewController;
-		UIViewController *toViewController;
+		UIViewController *fromViewController = nil;
+		UIViewController *toViewController = nil;
 
 		NSUInteger oldSelectedIndex = _selectedIndex;
 		_selectedIndex = newSelectedIndex;

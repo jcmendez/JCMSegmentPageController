@@ -1,7 +1,7 @@
 # JCMSegmentedPageController
 
 Custom container view controller for iOS5 that functions similarly to a UITabBarController, but the way to switch tabs is through a UISegmentedControl on top.  [Demo](https://github.com/jcmendez/JCMSegmentPageController/blob/master/Demo/DemoSimpleTableViewController.m) included.
-Very well [documented](http://jcmendez.github.com/JCMSegmentPageController/)
+Very well [documented](http://jcmendez.github.com/JCMSegmentPageController/).  This project is set up using ARC (Automatic Reference Counting)
 
 ![Screenshot](https://github.com/jcmendez/JCMSegmentPageController/raw/master/Screenshot.png)
 
