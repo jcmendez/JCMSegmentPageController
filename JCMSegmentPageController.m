@@ -116,12 +116,15 @@ static const float TAB_BAR_HEIGHT = 44.0f;
 
 	UIViewController *oldSelectedViewController = self.selectedViewController;
 
-	// Remove the old child view controllers.
-	for (UIViewController *viewController in _viewControllers) {
-		[viewController willMoveToParentViewController:nil];
-		[viewController removeFromParentViewController];
-	}
-
+    
+    if([UIViewController instancesRespondToSelector:@selector(willMoveToParentViewController:)])
+    {
+        // Remove the old child view controllers.
+        for (UIViewController *viewController in _viewControllers) {
+            [viewController willMoveToParentViewController:nil];
+            [viewController removeFromParentViewController];
+        }
+    }
 	_viewControllers = [newViewControllers copy];
 
 	// This follows the same rules as UITabBarController for trying to
@@ -134,12 +137,17 @@ static const float TAB_BAR_HEIGHT = 44.0f;
 	else
 		_selectedIndex = 0;
 
-	// Add the new child view controllers.
-	for (UIViewController *viewController in _viewControllers) {
-		[self addChildViewController:viewController];
-		[viewController didMoveToParentViewController:self];
-	}
-
+    
+    if([self respondsToSelector:@selector(addChildViewController:)])
+    {
+        // Add the new child view controllers.
+        for (UIViewController *viewController in _viewControllers) {
+            [self addChildViewController:viewController];
+            if([viewController respondsToSelector:@selector(didMoveToParentViewController:)])
+                [viewController didMoveToParentViewController:self];
+        }
+    }
+    
 	if ([self isViewLoaded])
 		[self reloadTabButtons];
 }
@@ -191,26 +199,30 @@ static const float TAB_BAR_HEIGHT = 44.0f;
 			toViewController.view.frame = rect;
 			headerContainerView.userInteractionEnabled = NO;
 
-			[self transitionFromViewController:fromViewController
-				toViewController:toViewController
-				duration:0.3
-				options:UIViewAnimationOptionLayoutSubviews | UIViewAnimationOptionCurveEaseOut
-				animations:^ {
-					CGRect rect = fromViewController.view.frame;
-					if (oldSelectedIndex < newSelectedIndex)
-						rect.origin.x = -rect.size.width;
-					else
-						rect.origin.x = rect.size.width;
-
-					fromViewController.view.frame = rect;
-					toViewController.view.frame = contentContainerView.bounds;
-				}
-				completion:^(BOOL finished) {
-					headerContainerView.userInteractionEnabled = YES;
-
-					if ([self.delegate respondsToSelector:@selector(segmentPageController:didSelectViewController:atIndex:)])
-						[self.delegate segmentPageController:self didSelectViewController:toViewController atIndex:newSelectedIndex];
-				}];
+            if([self respondsToSelector:@selector(transitionFromViewController:toViewController:duration:options:animations:completion:)])
+            {
+                
+                [self transitionFromViewController:fromViewController
+                                  toViewController:toViewController
+                                          duration:0.3
+                                           options:UIViewAnimationOptionLayoutSubviews | UIViewAnimationOptionCurveEaseOut
+                                        animations:^ {
+                                            CGRect rect = fromViewController.view.frame;
+                                            if (oldSelectedIndex < newSelectedIndex)
+                                                rect.origin.x = -rect.size.width;
+                                            else
+                                                rect.origin.x = rect.size.width;
+                                            
+                                            fromViewController.view.frame = rect;
+                                            toViewController.view.frame = contentContainerView.bounds;
+                                        }
+                                        completion:^(BOOL finished) {
+                                            headerContainerView.userInteractionEnabled = YES;
+                                            
+                                            if ([self.delegate respondsToSelector:@selector(segmentPageController:didSelectViewController:atIndex:)])
+                                                [self.delegate segmentPageController:self didSelectViewController:toViewController atIndex:newSelectedIndex];
+                                        }];
+            }
 		} else { // not animated
 			[fromViewController.view removeFromSuperview];
 
