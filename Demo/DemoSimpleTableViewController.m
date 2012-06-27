@@ -54,16 +54,6 @@
 	NSLog(@"%@ viewDidDisappear", self.title);
 }
 
-- (void)willMoveToParentViewController:(UIViewController *)parent {
-	[super willMoveToParentViewController:parent];
-	NSLog(@"%@ willMoveToParentViewController %@", self.title, parent);
-}
-
-- (void)didMoveToParentViewController:(UIViewController *)parent {
-	[super didMoveToParentViewController:parent];
-	NSLog(@"%@ didMoveToParentViewController %@", self.title, parent);
-}
-
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
 	return YES;
 }
@@ -115,7 +105,7 @@
 
 	UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:segmentPageController];
 	navController.navigationBar.tintColor = [UIColor colorWithRed:70/255.0f green:80/255.0f blue:90/255.0f alpha:1.0f];
-	[self presentViewController:navController animated:YES completion:nil];
+//	[self presentViewController:navController animated:YES completion:nil];
 }
 
 - (IBAction)dismissModalScreen:(id)sender {
