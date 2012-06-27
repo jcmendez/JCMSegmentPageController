@@ -19,9 +19,9 @@
 
 
 
+
 @implementation JCMSegmentPageController {
 	UIView *headerContainerView;
-    UISegmentedControl *segmentedControl;
 	UIView *contentContainerView;
 }
 
@@ -29,22 +29,27 @@
 @synthesize selectedIndex = _selectedIndex;
 @synthesize delegate = _delegate;
 @synthesize headerBarHeight, headerBarPosition;
+@synthesize headerBarControl;
 
-- (void)removeAllSegments {
-    [segmentedControl removeAllSegments];
+- (UIControl <JCMSegmentBar>*)buildHeaderBarControlWithFrame:(CGRect)rect
+{
+    UISegmentedControl *segmentedControl = [[UISegmentedControl alloc] initWithFrame:rect];
+    segmentedControl.momentary = NO;
+    segmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
+    [segmentedControl addTarget:self action:@selector(tabButtonPressed:) forControlEvents:UIControlEventValueChanged];
+    return (UIControl<JCMSegmentBar> *)segmentedControl;
 }
-
-- (void)addSegments {
-	NSUInteger index = 0;
+- (void)reloadTabButtons 
+{
+    // Remove all segments
+    UISegmentedControl *segmentedControl = (UISegmentedControl *)[self headerBarControl];
+    [segmentedControl removeAllSegments];
+	// Add segments
+    NSUInteger index = 0;
 	for (UIViewController *viewController in self.viewControllers) {
         [segmentedControl insertSegmentWithTitle:viewController.title atIndex:index animated:NO];
 		++index;
 	}
-}
-
-- (void)reloadTabButtons {
-	[self removeAllSegments];
-	[self addSegments];
     // TODO -- Do I need this???
 	NSUInteger lastIndex = _selectedIndex;
 	_selectedIndex = NSNotFound;
@@ -55,7 +60,7 @@
     CGFloat y = (self.headerBarPosition == JCMHeaderPositionTop) ? 0.0 : self.view.bounds.size.height - self.headerBarHeight;
 	CGRect rect = CGRectMake(0, y, self.view.bounds.size.width, self.headerBarHeight);
     headerContainerView.frame = rect;
-    segmentedControl.frame = headerContainerView.bounds;
+    headerBarControl.frame = headerContainerView.bounds;
 }
 
 /**
@@ -72,12 +77,11 @@
 	headerContainerView = [[UIView alloc] initWithFrame:rect];
 	headerContainerView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     CGRect segmentedControlRect = headerContainerView.bounds;
-    segmentedControl = [[UISegmentedControl alloc] initWithFrame:segmentedControlRect];
-    segmentedControl.momentary = NO;
-    segmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
-    [segmentedControl addTarget:self action:@selector(tabButtonPressed:) forControlEvents:UIControlEventValueChanged];
     
-    [headerContainerView addSubview:segmentedControl];
+    self.headerBarControl = [self buildHeaderBarControlWithFrame:segmentedControlRect];
+    [headerBarControl addTarget:self action:@selector(tabButtonPressed:) forControlEvents:UIControlEventValueChanged];
+    
+    [headerContainerView addSubview:headerBarControl];
 	[self.view addSubview:headerContainerView];
     
 	rect.origin.y = (self.headerBarPosition == JCMHeaderPositionTop) ? self.headerBarHeight : 0.0;
@@ -93,7 +97,7 @@
 	[super viewDidUnload];
 	headerContainerView = nil;
 	contentContainerView = nil;
-	segmentedControl = nil;
+	self.headerBarControl = nil;
 }
 
 - (void)viewWillLayoutSubviews {
@@ -180,7 +184,7 @@
 		_selectedIndex = newSelectedIndex;
         
 		if (_selectedIndex != NSNotFound) {
-            [segmentedControl setSelectedSegmentIndex:_selectedIndex];
+            [headerBarControl setSelectedSegmentIndex:_selectedIndex];
 			toViewController = self.selectedViewController;
 		}
         
@@ -257,7 +261,7 @@
 		[self setSelectedIndex:index animated:animated];
 }
 
-- (void)tabButtonPressed:(UISegmentedControl *)sender {
+- (void)tabButtonPressed:(UIControl<JCMSegmentBar> *)sender {
 	[self setSelectedIndex:sender.selectedSegmentIndex animated:YES];
 }
 

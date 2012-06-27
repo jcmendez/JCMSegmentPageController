@@ -16,6 +16,7 @@
  */
 
 @protocol JCMSegmentPageControllerDelegate;
+@protocol JCMSegmentBar;
 
 typedef enum
 {
@@ -44,6 +45,9 @@ typedef enum
 
 @property (assign) CGFloat headerBarHeight;
 @property (assign) JCMHeaderPosition headerBarPosition;
+@property (strong) UIControl<JCMSegmentBar> *headerBarControl;
+- (UIControl <JCMSegmentBar>*)buildHeaderBarControlWithFrame:(CGRect)rect;
+- (void)reloadTabButtons;
 @end
 
 /**
@@ -66,4 +70,10 @@ typedef enum
  * @param index the index of this page within the container
  */
 - (void)segmentPageController:(JCMSegmentPageController *)segmentPageController didSelectViewController:(UIViewController *)viewController atIndex:(NSUInteger)index;
+@end
+
+@protocol JCMSegmentBar <NSObject>
+@required
+- (void)setSelectedSegmentIndex:(NSUInteger)index;
+- (NSUInteger)selectedSegmentIndex;
 @end
