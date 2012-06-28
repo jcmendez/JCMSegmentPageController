@@ -17,6 +17,11 @@
 
 @protocol JCMSegmentPageControllerDelegate;
 
+typedef enum
+{
+    JCMHeaderPositionTop,
+    JCMHeaderPositionBottom
+}JCMHeaderPosition;
 /**
  * Custom container view controller for iOS5 that functions similarly to a 
  * UITabBarController, but the way to switch tabs is through a 
@@ -37,6 +42,8 @@
 - (void)setSelectedIndex:(NSUInteger)index animated:(BOOL)animated;
 - (void)setSelectedViewController:(UIViewController *)viewController animated:(BOOL)animated;
 
+@property (assign) CGFloat headerBarHeight;
+@property (assign) JCMHeaderPosition headerBarPosition;
 @end
 
 /**
