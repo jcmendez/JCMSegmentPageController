@@ -77,8 +77,9 @@
 	headerContainerView = [[UIView alloc] initWithFrame:rect];
 	headerContainerView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     CGRect segmentedControlRect = headerContainerView.bounds;
+    if(self.headerBarControl == nil)
+        self.headerBarControl = [self buildHeaderBarControlWithFrame:segmentedControlRect];
     
-    self.headerBarControl = [self buildHeaderBarControlWithFrame:segmentedControlRect];
     [headerBarControl addTarget:self action:@selector(tabButtonPressed:) forControlEvents:UIControlEventValueChanged];
     
     [headerContainerView addSubview:headerBarControl];
