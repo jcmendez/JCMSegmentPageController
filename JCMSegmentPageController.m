@@ -17,7 +17,9 @@
 
 #import "JCMSegmentPageController.h"
 
-
+#if ! __has_feature(objc_arc)
+#error This version of JCMSegmentPageController is ARC only. Either turn on ARC for the project or use -fobjc-arc flag
+#endif
 
 
 @implementation JCMSegmentPageController {
@@ -107,7 +109,6 @@
 }
 
 - (void)dealloc {
-    _viewControllers = nil;
     _delegate = nil;
 }
 
