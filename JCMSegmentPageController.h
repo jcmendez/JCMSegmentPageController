@@ -74,6 +74,8 @@ typedef enum
 
 @protocol JCMSegmentBar <NSObject>
 @required
+- (void)removeAllSegments;
+- (void)insertSegmentWithTitle:(NSString *)title atIndex:(NSUInteger)segment animated:(BOOL)animated;
 - (void)setSelectedSegmentIndex:(NSUInteger)index;
 - (NSUInteger)selectedSegmentIndex;
 @end
