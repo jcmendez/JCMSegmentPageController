@@ -16,6 +16,7 @@
  */
 
 @protocol JCMSegmentPageControllerDelegate;
+@protocol JCMSegmentBar;
 
 typedef enum
 {
@@ -32,18 +33,22 @@ typedef enum
 /// Keeps an array of the controllers managed by this container controller
 @property (nonatomic, copy) NSArray *viewControllers;
 /// Reference to the currently selected controller
-@property (nonatomic, weak) UIViewController *selectedViewController;
+@property (nonatomic, unsafe_unretained) UIViewController *selectedViewController;
 /// Index of the currently selected controller
 @property (nonatomic, assign) NSUInteger selectedIndex;
 /// Optional delegate that can be informed of a new selection and decide
 /// whether a page can or can't be selected
-@property (nonatomic, weak) id <JCMSegmentPageControllerDelegate> delegate;
+@property (nonatomic, unsafe_unretained) id <JCMSegmentPageControllerDelegate> delegate;
 
 - (void)setSelectedIndex:(NSUInteger)index animated:(BOOL)animated;
 - (void)setSelectedViewController:(UIViewController *)viewController animated:(BOOL)animated;
 
 @property (assign) CGFloat headerBarHeight;
 @property (assign) JCMHeaderPosition headerBarPosition;
+
+@property (strong) UIControl<JCMSegmentBar> *headerBarControl;
+- (UIControl <JCMSegmentBar>*)buildHeaderBarControlWithFrame:(CGRect)rect;
+- (void)reloadTabButtons;
 @end
 
 /**
@@ -66,4 +71,12 @@ typedef enum
  * @param index the index of this page within the container
  */
 - (void)segmentPageController:(JCMSegmentPageController *)segmentPageController didSelectViewController:(UIViewController *)viewController atIndex:(NSUInteger)index;
+@end
+
+@protocol JCMSegmentBar <NSObject>
+@required
+- (void)removeAllSegments;
+- (void)insertSegmentWithTitle:(NSString *)title atIndex:(NSUInteger)segment animated:(BOOL)animated;
+- (void)setSelectedSegmentIndex:(NSUInteger)index;
+- (NSUInteger)selectedSegmentIndex;
 @end

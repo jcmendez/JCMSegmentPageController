@@ -18,10 +18,13 @@
 #import "JCMSegmentPageController.h"
 
 
+#if ! __has_feature(objc_arc)
+#error This version of JCMSegmentPageController is ARC only. Either turn on ARC for the project or use -fobjc-arc flag
+#endif
+
 
 @implementation JCMSegmentPageController {
 	UIView *headerContainerView;
-    UISegmentedControl *segmentedControl;
 	UIView *contentContainerView;
 }
 
@@ -30,21 +33,33 @@
 @synthesize delegate = _delegate;
 @synthesize headerBarHeight, headerBarPosition;
 
-- (void)removeAllSegments {
-    [segmentedControl removeAllSegments];
-}
+@synthesize headerBarControl;
 
-- (void)addSegments {
-	NSUInteger index = 0;
-	for (UIViewController *viewController in self.viewControllers) {
-        [segmentedControl insertSegmentWithTitle:viewController.title atIndex:index animated:NO];
-		++index;
-	}
+- (UIControl <JCMSegmentBar>*)buildHeaderBarControlWithFrame:(CGRect)rect
+{
+    UISegmentedControl *segmentedControl = [[UISegmentedControl alloc] initWithFrame:rect];
+    segmentedControl.momentary = NO;
+    segmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
+    [segmentedControl addTarget:self action:@selector(tabButtonPressed:) forControlEvents:UIControlEventValueChanged];
+    return (UIControl<JCMSegmentBar> *)segmentedControl;
 }
+//- (void)reloadTabButtons 
+//{
+//    // Remove all segments
+//    UISegmentedControl *segmentedControl = (UISegmentedControl *)[self headerBarControl];
+//    [segmentedControl removeAllSegments];
+//	// Add segments
+//    NSUInteger index = 0;
+//	for (UIViewController *viewController in self.viewControllers) {
+//        [segmentedControl insertSegmentWithTitle:viewController.title atIndex:index animated:NO];
+//		++index;
+//	}
+//}
 
 - (void)reloadTabButtons {
-	[self removeAllSegments];
-	[self addSegments];
+	//[self removeAllSegments];
+//	[self addSegments];
+
     // TODO -- Do I need this???
 	NSUInteger lastIndex = _selectedIndex;
 	_selectedIndex = NSNotFound;
@@ -55,7 +70,7 @@
     CGFloat y = (self.headerBarPosition == JCMHeaderPositionTop) ? 0.0 : self.view.bounds.size.height - self.headerBarHeight;
 	CGRect rect = CGRectMake(0, y, self.view.bounds.size.width, self.headerBarHeight);
     headerContainerView.frame = rect;
-    segmentedControl.frame = headerContainerView.bounds;
+    headerBarControl.frame = headerContainerView.bounds;
 }
 
 /**
@@ -72,12 +87,12 @@
 	headerContainerView = [[UIView alloc] initWithFrame:rect];
 	headerContainerView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     CGRect segmentedControlRect = headerContainerView.bounds;
-    segmentedControl = [[UISegmentedControl alloc] initWithFrame:segmentedControlRect];
-    segmentedControl.momentary = NO;
-    segmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
-    [segmentedControl addTarget:self action:@selector(tabButtonPressed:) forControlEvents:UIControlEventValueChanged];
+    if(self.headerBarControl == nil)
+        self.headerBarControl = [self buildHeaderBarControlWithFrame:segmentedControlRect];
     
-    [headerContainerView addSubview:segmentedControl];
+    [headerBarControl addTarget:self action:@selector(tabButtonPressed:) forControlEvents:UIControlEventValueChanged];
+    
+    [headerContainerView addSubview:headerBarControl];
 	[self.view addSubview:headerContainerView];
     
 	rect.origin.y = (self.headerBarPosition == JCMHeaderPositionTop) ? self.headerBarHeight : 0.0;
@@ -93,7 +108,7 @@
 	[super viewDidUnload];
 	headerContainerView = nil;
 	contentContainerView = nil;
-	segmentedControl = nil;
+	self.headerBarControl = nil;
 }
 
 - (void)viewWillLayoutSubviews {
@@ -119,13 +134,16 @@
 	NSAssert([newViewControllers count] >= 2, @"JCMSegmentPageController requires at least two view controllers");
     
 	UIViewController *oldSelectedViewController = self.selectedViewController;
-
-	// Remove the old child view controllers.
-	for (UIViewController *viewController in _viewControllers) {
-		[viewController willMoveToParentViewController:nil];
-		[viewController removeFromParentViewController];
-	}
-
+    
+    
+    if([UIViewController instancesRespondToSelector:@selector(willMoveToParentViewController:)])
+    {
+        // Remove the old child view controllers.
+        for (UIViewController *viewController in _viewControllers) {
+            [viewController willMoveToParentViewController:nil];
+            [viewController removeFromParentViewController];
+        }
+    }
 	_viewControllers = [newViewControllers copy];
     
 	// This follows the same rules as UITabBarController for trying to
@@ -137,13 +155,18 @@
 		_selectedIndex = newIndex;
 	else
 		_selectedIndex = 0;
-
-	// Add the new child view controllers.
-	for (UIViewController *viewController in _viewControllers) {
-		[self addChildViewController:viewController];
-		[viewController didMoveToParentViewController:self];
-	}
-
+    
+    
+    if([self respondsToSelector:@selector(addChildViewController:)])
+    {
+        // Add the new child view controllers.
+        for (UIViewController *viewController in _viewControllers) {
+            [self addChildViewController:viewController];
+            if([viewController respondsToSelector:@selector(didMoveToParentViewController:)])
+                [viewController didMoveToParentViewController:self];
+        }
+    }
+    
 	if ([self isViewLoaded])
 		[self reloadTabButtons];
 }
@@ -172,7 +195,7 @@
 		_selectedIndex = newSelectedIndex;
         
 		if (_selectedIndex != NSNotFound) {
-            [segmentedControl setSelectedSegmentIndex:_selectedIndex];
+            [headerBarControl setSelectedSegmentIndex:_selectedIndex];
 			toViewController = self.selectedViewController;
 		}
         
@@ -194,27 +217,31 @@
             
 			toViewController.view.frame = rect;
 			headerContainerView.userInteractionEnabled = NO;
-
-			[self transitionFromViewController:fromViewController
-				toViewController:toViewController
-				duration:0.3
-				options:UIViewAnimationOptionLayoutSubviews | UIViewAnimationOptionCurveEaseOut
-				animations:^ {
-					CGRect rect = fromViewController.view.frame;
-					if (oldSelectedIndex < newSelectedIndex)
-						rect.origin.x = -rect.size.width;
-					else
-						rect.origin.x = rect.size.width;
-
-					fromViewController.view.frame = rect;
-					toViewController.view.frame = contentContainerView.bounds;
-				}
-				completion:^(BOOL finished) {
-					headerContainerView.userInteractionEnabled = YES;
-
-					if ([self.delegate respondsToSelector:@selector(segmentPageController:didSelectViewController:atIndex:)])
-						[self.delegate segmentPageController:self didSelectViewController:toViewController atIndex:newSelectedIndex];
-				}];
+            
+            if([self respondsToSelector:@selector(transitionFromViewController:toViewController:duration:options:animations:completion:)])
+            {
+                
+                [self transitionFromViewController:fromViewController
+                                  toViewController:toViewController
+                                          duration:0.3
+                                           options:UIViewAnimationOptionLayoutSubviews | UIViewAnimationOptionCurveEaseOut
+                                        animations:^ {
+                                            CGRect rect = fromViewController.view.frame;
+                                            if (oldSelectedIndex < newSelectedIndex)
+                                                rect.origin.x = -rect.size.width;
+                                            else
+                                                rect.origin.x = rect.size.width;
+                                            
+                                            fromViewController.view.frame = rect;
+                                            toViewController.view.frame = contentContainerView.bounds;
+                                        }
+                                        completion:^(BOOL finished) {
+                                            headerContainerView.userInteractionEnabled = YES;
+                                            
+                                            if ([self.delegate respondsToSelector:@selector(segmentPageController:didSelectViewController:atIndex:)])
+                                                [self.delegate segmentPageController:self didSelectViewController:toViewController atIndex:newSelectedIndex];
+                                        }];
+            }
 		} else { // not animated
 			[fromViewController.view removeFromSuperview];
             
@@ -245,7 +272,7 @@
 		[self setSelectedIndex:index animated:animated];
 }
 
-- (void)tabButtonPressed:(UISegmentedControl *)sender {
+- (void)tabButtonPressed:(UIControl<JCMSegmentBar> *)sender {
 	[self setSelectedIndex:sender.selectedSegmentIndex animated:YES];
 }
 
