@@ -49,6 +49,10 @@ typedef enum
 @property (strong) UIControl<JCMSegmentBar> *headerBarControl;
 - (UIControl <JCMSegmentBar>*)buildHeaderBarControlWithFrame:(CGRect)rect;
 - (void)reloadTabButtons;
+
+// Hiding Header Bar
+- (void)setHeaderBarHidden:(BOOL)hidden;
+- (void)setHeaderBarHidden:(BOOL)hidden animated:(BOOL)animated;
 @end
 
 /**

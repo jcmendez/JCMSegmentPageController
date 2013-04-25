@@ -35,6 +35,34 @@
 
 @synthesize headerBarControl;
 
+- (void)setHeaderBarHidden:(BOOL)hidden
+{
+    [self setHeaderBarHidden:hidden animated:NO];
+}
+- (void)setHeaderBarHidden:(BOOL)hidden animated:(BOOL)animated
+{
+    CGRect content = self.view.bounds;
+    CGRect header = CGRectMake(0.0, 0.0, self.view.bounds.size.width, self.headerBarHeight);
+    if(hidden) 
+    {
+        content = self.view.bounds;
+        header.size.height = 0.0;
+    }else 
+    {
+        content.size.height  = self.view.bounds.size.height - self.headerBarHeight;
+        content.origin.y = (self.headerBarPosition == JCMHeaderPositionTop) ? self.headerBarHeight : 0.0;
+        
+        header.origin.y = (self.headerBarPosition == JCMHeaderPositionTop) ? 0.0 : self.view.bounds.size.height - self.headerBarHeight;
+        header.size.height = self.headerBarHeight;
+    }
+    
+    [UIView animateWithDuration:animated ? 0.25 : 0.0
+                     animations:^
+    {
+        contentContainerView.frame = content;
+        headerContainerView.frame = header;                     
+    }];
+}
 - (UIControl <JCMSegmentBar>*)buildHeaderBarControlWithFrame:(CGRect)rect
 {
     UISegmentedControl *segmentedControl = [[UISegmentedControl alloc] initWithFrame:rect];
