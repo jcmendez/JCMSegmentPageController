@@ -23,11 +23,20 @@ static const float TAB_BAR_HEIGHT = 44.0f;
 	UIView *headerContainerView;
   UISegmentedControl *segmentedControl;
 	UIView *contentContainerView;
+    UIColor *tintColor;
 }
 
 @synthesize viewControllers = _viewControllers;
 @synthesize selectedIndex = _selectedIndex;
 @synthesize delegate = _delegate;
+
+- (id)initWithTintColor:(UIColor *)color {
+    self = [self init];
+    if (self) {
+        tintColor = color;
+    }
+    return self;
+}
 
 - (void)removeAllSegments {
   [segmentedControl removeAllSegments];
@@ -67,13 +76,15 @@ static const float TAB_BAR_HEIGHT = 44.0f;
 	CGRect rect = CGRectMake(0, 0, self.view.bounds.size.width, TAB_BAR_HEIGHT);
 	headerContainerView = [[UIView alloc] initWithFrame:rect];
 	headerContainerView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-  CGRect segmentedControlRect = CGRectInset(rect, 5.0, 5.0);
-  segmentedControl = [[UISegmentedControl alloc] initWithFrame:segmentedControlRect];
-  segmentedControl.momentary = NO;
-  segmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
-  [segmentedControl addTarget:self action:@selector(tabButtonPressed:) forControlEvents:UIControlEventValueChanged];
-
-  [headerContainerView addSubview:segmentedControl];
+    CGRect segmentedControlRect = CGRectInset(rect, 5.0, 5.0);
+    segmentedControl = [[UISegmentedControl alloc] initWithFrame:segmentedControlRect];
+    segmentedControl.momentary = NO;
+    segmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
+    [segmentedControl addTarget:self action:@selector(tabButtonPressed:) forControlEvents:UIControlEventValueChanged];
+    if (tintColor) {
+        [segmentedControl setTintColor:tintColor];
+    }
+    [headerContainerView addSubview:segmentedControl];
 	[self.view addSubview:headerContainerView];
 
 	rect.origin.y = TAB_BAR_HEIGHT;

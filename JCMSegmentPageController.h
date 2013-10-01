@@ -36,6 +36,7 @@
 
 - (void)setSelectedIndex:(NSUInteger)index animated:(BOOL)animated;
 - (void)setSelectedViewController:(UIViewController *)viewController animated:(BOOL)animated;
+- (id)initWithTintColor:(UIColor *)color;
 
 @end
 
